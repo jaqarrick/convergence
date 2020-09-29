@@ -3,6 +3,7 @@ const app = express()
 const server = require("http").Server(app)
 const io = require("socket.io")(server)
 const sendUpdatedRooms = require("./middleware/sendUpdatedRooms")
+const joinRoom = require("./middleware/joinRoom")
 
 io.on("connection", socket => {
   sendUpdatedRooms(io, null)
@@ -12,7 +13,7 @@ io.on("connection", socket => {
   })
 
   socket.on("update room", roomid => {
-    socket.join(roomid)
+    joinRoom(socket, io, roomid)
   })
   socket.on("disconnect", () => {
     console.log("A user has disconnected!")

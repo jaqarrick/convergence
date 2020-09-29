@@ -6,7 +6,7 @@ import Welcome from "./components/welcome/Welcome"
 import RoomComponent from "./components/roomcomponent/RoomComponent"
 
 const socket = io.connect("http://localhost:5000")
-
+console.log(socket)
 function App() {
   let history = useHistory()
   const [currentRoom, setCurrentRoom] = useState()
