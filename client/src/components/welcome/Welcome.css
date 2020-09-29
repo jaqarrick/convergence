@@ -1,0 +1,19 @@
+.room-list.active {
+  display: block;
+  height: 500px;
+  width: 300px;
+  border: solid red 1px;
+}
+.room-list {
+  display: none;
+}
+.room-list.active > ul > li {
+  cursor: pointer;
+  color: blue;
+  list-style-type: none;
+  margin-top: 5px;
+}
+.room-list.active > ul > li:hover {
+  text-decoration: underline;
+  color: rgb(253, 230, 100);
+}
