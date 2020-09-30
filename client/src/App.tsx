@@ -6,7 +6,7 @@ import Welcome from "./components/welcome/Welcome"
 import RoomComponent from "./components/roomcomponent/RoomComponent"
 
 const socket = io.connect("http://localhost:5000")
-console.log(socket)
+
 function App() {
   let history = useHistory()
   const [currentRoom, setCurrentRoom] = useState()
@@ -14,6 +14,9 @@ function App() {
   useEffect(() => console.log(allRooms), [allRooms])
   socket.on("update room list", (rooms: any[]) => {
     setAllRooms(rooms)
+  })
+  socket.on("confirm room join", (message: string) => {
+    if (typeof message === "string") setMessage(message)
   })
   const updateRoom = useCallback(
     roomid => {
@@ -23,7 +26,7 @@ function App() {
     },
     [setCurrentRoom, history]
   )
-
+  const [message, setMessage] = useState<string>("")
   const joinRoom = useCallback(roomid => {
     socket.emit("join room", roomid)
     console.log(`You have joined room: ${roomid}`)
@@ -31,10 +34,13 @@ function App() {
   // const [currentRoom, setCurrentRoom] = useState<any>(null)
   return (
     <Switch>
-      <Route path={"/rooms/:roomid"} component={RoomComponent} />
+      <Route
+        exact
+        path={"/rooms/:roomid"}
+        render={props => <RoomComponent {...props} message={message} />}
+      />
       <Route path='/welcome'>
         <Welcome
-          // history={history}
           allRooms={allRooms}
           updateRoom={updateRoom}
           joinRoom={joinRoom}
