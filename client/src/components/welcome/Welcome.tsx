@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react"
+import React, { useEffect, useCallback, useState } from "react"
 import "./Welcome.css"
 import { v4 as uuidv4 } from "uuid"
 interface Props {
@@ -13,6 +13,7 @@ const Welcome: React.FC<Props> = ({
   allRooms,
   joinRoom,
 }) => {
+  useEffect(() => console.log(allRooms), [allRooms])
   const [isListOpen, setIsListOpen] = useState<Boolean>(true)
   const createNewRoom = useCallback(() => {
     const roomId = uuidv4()
@@ -28,14 +29,14 @@ const Welcome: React.FC<Props> = ({
       </button>
       <div className={isListOpen ? "room-list active" : "room-list"}>
         <ul>
-          {allRooms.map(room => (
+          {allRooms.map(({ roomid }) => (
             <li
               onClick={() => {
-                updateRoom(room)
+                updateRoom(roomid)
               }}
-              key={room}>
+              key={roomid}>
               {" "}
-              {room}{" "}
+              {roomid}{" "}
             </li>
           ))}
         </ul>

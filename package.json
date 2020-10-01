@@ -4,7 +4,8 @@
   "description": "repository for convergence app",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "start-peer-server": "peerjs --port 9000 --key peerjs --path /convergence"
   },
   "author": "",
   "license": "ISC",

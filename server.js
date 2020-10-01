@@ -4,6 +4,7 @@ const server = require("http").Server(app)
 const io = require("socket.io")(server)
 const sendUpdatedRooms = require("./middleware/sendUpdatedRooms")
 const joinRoom = require("./middleware/joinRoom")
+const { send } = require("process")
 
 io.on("connection", socket => {
   sendUpdatedRooms(io, null)
@@ -14,6 +15,10 @@ io.on("connection", socket => {
 
   socket.on("update room", roomid => {
     joinRoom(socket, io, roomid)
+  })
+  socket.on("update peers", data => {
+    const { currentRoom, id } = data
+    sendUpdatedRooms(io, currentRoom, id)
   })
   socket.on("disconnect", () => {
     console.log("A user has disconnected!")
