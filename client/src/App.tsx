@@ -45,33 +45,35 @@ function App() {
   }, [])
 
   return (
-    <Switch>
-      <Route
-        exact
-        path={"/rooms/:roomid"}
-        render={props => (
-          <RoomComponent
-            {...props}
-            updateSocketPeers={updateSocketPeers}
-            setCurrentPeer={setCurrentPeer}
-            currentPeer={currentPeer}
-            currentRoom={currentRoom}
-            currentRoomObject={currentRoomObject}
-            message={message}
-          />
-        )}
-      />
-      <Route path='/welcome'>
-        <Welcome
-          allRooms={allRooms}
-          updateRoom={updateRoom}
-          joinRoom={joinRoom}
+    <div className='wrapper'>
+      <Switch>
+        <Route
+          exact
+          path={"/rooms/:roomid"}
+          render={props => (
+            <RoomComponent
+              {...props}
+              updateSocketPeers={updateSocketPeers}
+              setCurrentPeer={setCurrentPeer}
+              currentPeer={currentPeer}
+              currentRoom={currentRoom}
+              currentRoomObject={currentRoomObject}
+              message={message}
+            />
+          )}
         />
-      </Route>
-      <Route exact path='/'>
-        <Redirect to='/welcome' />
-      </Route>
-    </Switch>
+        <Route path='/welcome'>
+          <Welcome
+            allRooms={allRooms}
+            updateRoom={updateRoom}
+            joinRoom={joinRoom}
+          />
+        </Route>
+        <Route exact path='/'>
+          <Redirect to='/welcome' />
+        </Route>
+      </Switch>
+    </div>
   )
 }
 

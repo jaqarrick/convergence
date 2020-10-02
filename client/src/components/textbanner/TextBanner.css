@@ -1,0 +1,18 @@
+.wrapper .welcome-container .text-banner-container {
+  width: 100vw;
+  display: flex;
+  position: fixed;
+  top: 35%;
+}
+
+.wrapper .welcome-container .text-banner-container .text-container {
+  font-family: "StepsMonoRegular", Arial, Helvetica, sans-serif;
+  font-weight: nomral;
+  font-style: normal;
+  font-size: 75px;
+  cursor: default;
+}
+
+.wrapper .welcome-container .text-banner-container .text-container span {
+  white-space: nowrap;
+}
