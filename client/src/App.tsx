@@ -4,7 +4,6 @@ import { Switch, Route, Redirect, useHistory } from "react-router-dom"
 import io from "socket.io-client"
 import Welcome from "./components/welcome/Welcome"
 import RoomComponent from "./components/roomcomponent/RoomComponent"
-import Peer from "peerjs"
 import RoomDataObject from "./types"
 
 const socket = io.connect("http://localhost:5000")
@@ -16,7 +15,6 @@ function App() {
   const [currentRoomObject, setCurrentRoomObject] = useState<RoomDataObject>()
   const [allRooms, setAllRooms] = useState<any[]>([])
   useEffect(() => {
-    console.log(allRooms)
     setCurrentRoomObject(allRooms.find(({ roomid }) => roomid === currentRoom))
   }, [allRooms, setCurrentRoomObject, currentRoom])
   useEffect(() => console.log(currentRoomObject), [currentRoomObject])
@@ -36,27 +34,16 @@ function App() {
     },
     [setCurrentRoom, history]
   )
+
+  const updateSocketPeers = useCallback((roomid, peerid) => {
+    socket.emit("update peers", { roomid, peerid })
+  }, [])
   const [message, setMessage] = useState<string>("")
   const joinRoom = useCallback(roomid => {
     socket.emit("join room", roomid)
     console.log(`You have joined room: ${roomid}`)
   }, [])
-  const createPeer = useCallback(() => {
-    const peer = new Peer({
-      host: "localhost",
-      port: 9000,
-      path: "/convergence",
-    })
-    peer.on("open", id => {
-      console.log(id)
-      setCurrentPeer(id)
-      console.log("hello")
-      console.log(currentRoom)
-      socket.emit("update peers", { currentRoom, id })
-    })
-  }, [setCurrentPeer, currentRoom])
 
-  // const [currentRoom, setCurrentRoom] = useState<any>(null)
   return (
     <Switch>
       <Route
@@ -65,7 +52,8 @@ function App() {
         render={props => (
           <RoomComponent
             {...props}
-            createPeer={createPeer}
+            updateSocketPeers={updateSocketPeers}
+            setCurrentPeer={setCurrentPeer}
             currentPeer={currentPeer}
             currentRoom={currentRoom}
             currentRoomObject={currentRoomObject}

@@ -17,8 +17,9 @@ io.on("connection", socket => {
     joinRoom(socket, io, roomid)
   })
   socket.on("update peers", data => {
-    const { currentRoom, id } = data
-    sendUpdatedRooms(io, currentRoom, id)
+    const { roomid, peerid } = data
+
+    sendUpdatedRooms(io, roomid, peerid)
   })
   socket.on("disconnect", () => {
     console.log("A user has disconnected!")
