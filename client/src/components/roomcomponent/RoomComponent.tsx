@@ -22,10 +22,15 @@ const RoomComponent: React.FC<RouteProps & PassedProps> = ({
   updateSocketPeers,
 }) => {
   useEffect(() => console.log(message, currentRoom), [currentRoom, message])
-  const [stream, setStream] = useState<MediaStream>()
   const initPeerVideo = useCallback((stream: MediaStream) => {
     if (peerVideoRef) {
       peerVideoRef.current.srcObject = stream
+    }
+  }, [])
+
+  const initUserVideo = useCallback((stream: MediaStream) => {
+    if (userVideoRef) {
+      userVideoRef.current.srcObject = stream
     }
   }, [])
   const [peer, setPeer] = useState<any>()
@@ -49,38 +54,53 @@ const RoomComponent: React.FC<RouteProps & PassedProps> = ({
         })
         .then(stream => {
           call.answer(stream)
-          call.on("stream", (remoteStream: any) => {
-            initPeerVideo(stream)
+          call.on("stream", (remoteStream: MediaStream) => {
+            initPeerVideo(remoteStream)
+            initUserVideo(stream)
           })
         })
     })
-  }, [setCurrentPeer, currentRoom, setPeer, updateSocketPeers, initPeerVideo])
+  }, [
+    setCurrentPeer,
+    initUserVideo,
+    currentRoom,
+    setPeer,
+    updateSocketPeers,
+    initPeerVideo,
+  ])
   // const [currentRoom, setCurrentRoom] = useState<any>(null)
-
   const initVideoCall = useCallback(
-    (tartgetPeerId: any) => {
-      console.log(tartgetPeerId)
+    (targetPeerId: any) => {
       if (peer) {
         navigator.mediaDevices
-          .getUserMedia({
-            audio: true,
-            video: true,
-          })
+          .getUserMedia({ video: true, audio: true })
           .then(stream => {
-            setStream(stream)
-            if (userVideoRef.current) {
-              userVideoRef.current.srcObject = stream
-              console.log(userVideoRef.current)
-            }
+            const call = peer.call(targetPeerId, stream)
+            call.on("stream", (remoteStream: MediaStream) => {
+              initPeerVideo(remoteStream)
+              initUserVideo(stream)
+            })
           })
 
-        const call = peer.call(tartgetPeerId, stream)
-        call.on("stream", (remoteStream: MediaStream) => {
-          initPeerVideo(remoteStream)
-        })
+        // const getUserMedia = navigator.getUserMedia
+        // getUserMedia(
+        //   { video: true, audio: true },
+        //   (stream: MediaStream) => {
+        //     var call = peer.call("another-peers-id", stream)
+        //     call.on("stream", (remoteStream: MediaStream) => {
+        //       initPeerVideo(remoteStream)
+        //       setStream(stream)
+
+        //       userVideoRef.current.srcObject = stream
+        //     })
+        //   },
+        //   function (err) {
+        //     console.log("Failed to get local stream", err)
+        //   }
+        // )
       }
     },
-    [peer, stream, initPeerVideo]
+    [peer, initPeerVideo, initUserVideo]
   )
   const peerVideoRef = useRef<any>(null)
   const userVideoRef = useRef<any>(null)
