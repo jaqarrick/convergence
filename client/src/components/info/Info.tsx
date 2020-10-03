@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import "./Info.css"
-import questionLogo from "./question-logo.svg"
+import questionLogo from "../welcome/logos/question-logo.svg"
 
 const Info: React.FC = () => {
   const [isInfoMenuOpen, setIsInfoMenuOpen] = useState<Boolean>(false)
